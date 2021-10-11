@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notesappusingroomandroid.R
 import com.example.notesappusingroomandroid.data.Note
 
-class notesAdapter(private val context: Context, private val note: ArrayList<Note>) : RecyclerView.Adapter<notesAdapter.ViewHolder>() {
+class notesAdapter(private val context: Context, private val note: List<Note>) : RecyclerView.Adapter<notesAdapter.ViewHolder>() {
 
     class ViewHolder(itemView : View): RecyclerView.ViewHolder(itemView) {
         val title : TextView = itemView.findViewById(R.id.note_title)
@@ -21,8 +21,8 @@ class notesAdapter(private val context: Context, private val note: ArrayList<Not
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.text = note[position].getTitle()
         holder.desc.text = note[position].getDesc()
+        holder.title.text = note[position].getText()
     }
 
     override fun getItemCount(): Int {
