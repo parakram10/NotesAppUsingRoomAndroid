@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="#FAFBFB">
+    android:background="#D8F1F1"
+    android:layout_margin="2dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -24,6 +26,17 @@
         android:layout_margin="5dp"
         android:textStyle="italic"
         android:id="@+id/note_desc"
-        android:textColor="#272323"/>
+        android:textColor="#272323"
+        android:layout_below="@id/note_title"/>
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_baseline_delete_24"
+        app:tint="@color/purple_200"
+        android:id="@+id/delete"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="5dp"
+        android:padding="5dp" />
+
+</RelativeLayout>

@@ -2,7 +2,6 @@ package com.example.notesappusingroomandroid
 
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,7 @@ import java.lang.ref.WeakReference
 
 class MainActivity : AppCompatActivity() {
 
-    private var list : List<Note> = ArrayList()
+    private var list : MutableList<Note> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,32 +28,31 @@ class MainActivity : AppCompatActivity() {
         val sortById : Button = findViewById(R.id.sort_by_id)
         val sortByWord : Button = findViewById(R.id.sort_by_word)
 
-
         getAllNotes(recyclerView)
 
         add.setOnClickListener(){
             val t = title.text.toString()
             val d = desc.text.toString()
             if(t.isNotEmpty() && d.isNotEmpty()){
-                insertSingleNote(t,d)
-                getAllNotes(recyclerView)
+                insertSingleNote(t,d,recyclerView)
                 title.setText("")
                 desc.setText("")
             }
+            getAllNotes(recyclerView)
         }
 
         sortById.setOnClickListener{
             NotesDatabase.getDatabase(applicationContext)
-                ?.notesDao()
-                ?.deleteAll()
+                    ?.notesDao()
+                    ?.deleteAll()
 
             getAllNotes(recyclerView)
         }
 
         sortByWord.setOnClickListener{
-            val list = NotesDatabase.getDatabase(applicationContext)
-                ?.notesDao()
-                ?.sortByTitle()!!
+            list = NotesDatabase.getDatabase(applicationContext)
+                    ?.notesDao()
+                    ?.sortByTitle()!!
 
             val notesAdapter = notesAdapter(this, list)
             recyclerView.layoutManager = LinearLayoutManager(this)
@@ -64,9 +62,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getAllNotes(recyclerView : RecyclerView) {
-        val list = NotesDatabase.getDatabase(applicationContext)
-            ?.notesDao()
-            ?.getAll()!!
+
+        list = NotesDatabase.getDatabase(applicationContext)
+                ?.notesDao()
+                ?.getAll()!!
 
         val notesAdapter = notesAdapter(this, list)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -74,10 +73,11 @@ class MainActivity : AppCompatActivity() {
         notesAdapter.notifyDataSetChanged()
     }
 
-    private fun insertSingleNote(title: String, desc : String){
+    private fun insertSingleNote(title: String, desc : String, recyclerView: RecyclerView){
         val note : Note = Note(title, desc)
         val insertAsyncTask : InsertAsyncTask = InsertAsyncTask(this@MainActivity)
         insertAsyncTask.execute(note)
+        getAllNotes(recyclerView)
     }
 
     class InsertAsyncTask(activity: MainActivity) : AsyncTask<Note, Void, Void>(){
@@ -85,7 +85,6 @@ class MainActivity : AppCompatActivity() {
         private val activityReference : WeakReference<MainActivity> = WeakReference(activity)
 
         override fun doInBackground(vararg params: Note): Void? {
-            Log.d("Hello", params[0].toString())
             activityReference.get()?.let {
                 NotesDatabase.getDatabase(it.applicationContext)
                         ?.notesDao()
